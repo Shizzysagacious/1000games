@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAINFRAME // GAME HUB</title>
+    <style>
+        /* --- RESET & VARS --- */
+        :root {
+            --bg-color: #050505;
+            --term-green: #0aff0a;
+            --term-dim: #003b00;
+            --accent: #ff0055; /* Cyberpunk Pink */
+            --glass: rgba(10, 255, 10, 0.05);
+            --font-main: 'Courier New', Courier, monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--term-green);
+            font-family: var(--font-main);
+            overflow-x: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- CRT OVERLAY EFFECTS --- */
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.2) 50%,
+                rgba(0,0,0,0.2)
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .flicker-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10, 255, 10, 0.02);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 998;
+            animation: flicker 0.15s infinite;
+        }
+
+        /* --- BOOT SEQUENCE SCREEN --- */
+        #boot-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 100;
+            padding: 20px;
+        }
+
+        .log-line {
+            width: 100%;
+            max-width: 600px;
+            opacity: 0;
+            margin-bottom: 5px;
+        }
+
+        /* --- DASHBOARD (HIDDEN INITIALLY) --- */
+        #dashboard {
+            display: none; /* Toggled by JS */
+            opacity: 0;
+            transition: opacity 1s ease;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        header {
+            border-bottom: 2px solid var(--term-green);
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            font-size: 2rem;
+            text-shadow: 0 0 10px var(--term-green);
+        }
+
+        .status-badge {
+            font-size: 0.8rem;
+            background: var(--term-green);
+            color: var(--bg-color);
+            padding: 2px 8px;
+            font-weight: bold;
+        }
+
+        /* --- GRID SYSTEM --- */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        /* --- CARD DESIGN (React-like component style) --- */
+        .card {
+            border: 1px solid var(--term-dim);
+            background: var(--glass);
+            padding: 1.5rem;
+            position: relative;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--term-green);
+            overflow: hidden;
+            display: block;
+        }
+
+        .card:hover {
+            border-color: var(--term-green);
+            box-shadow: 0 0 15px var(--term-dim);
+            transform: translateY(-5px);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(10,255,10,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .card:hover::before {
+            left: 100%;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--term-dim);
+            padding-bottom: 0.5rem;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .card-id {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .card-desc {
+            font-size: 0.9rem;
+            line-height: 1.4;
+            opacity: 0.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .new-tag {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--accent);
+            color: #fff;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            animation: pulse 1s infinite;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes flicker {
+            0% { opacity: 0.02; }
+            5% { opacity: 0.05; }
+            10% { opacity: 0.02; }
+            100% { opacity: 0.02; }
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .fade-in-up {
+            animation: slideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="scanlines"></div>
+    <div class="flicker-overlay"></div>
+
+    <div id="boot-screen">
+        <div id="terminal-logs"></div>
+    </div>
+
+    <main id="dashboard">
+        <header>
+            <div>
+                <h1>MAINFRAME_V1</h1>
+                <small>System Architect: [You]</small>
+            </div>
+            <div class="status-badge">SYSTEM ONLINE</div>
+        </header>
+
+        <div class="grid-container" id="game-grid">
+            </div>
+    </main>
+
+    <script>
+        // --- DATA LAYER ---
+        const games = [
+            {
+                id: "MOD_001",
+                name: "Grid Runner 1D",
+                url: "https://defender-eight.vercel.app",
+                desc: "High-velocity linear defense protocol. Protect the line.",
+                isNew: true
+            },
+            {
+                id: "MOD_002",
+                name: "Chess Seven",
+                url: "https://chess-seven-nu.vercel.app/",
+                desc: "Strategic warfare simulator. Standard rules apply.",
+                isNew: false
+            },
+            {
+                id: "MOD_003",
+                name: "TypeFaster",
+                url: "https://typefaster-three.vercel.app",
+                desc: "Input velocity training. Measure your WPM efficiency.",
+                isNew: false
+            },
+            {
+                id: "MOD_004",
+                name: "Tic-Tac-Toe",
+                url: "https://tic-tac-toe-1-ruby.vercel.app",
+                desc: "Logic core calibration. Ruby-based opponent.",
+                isNew: false
+            },
+            {
+                id: "MOD_005",
+                name: "Speed Reader",
+                url: "https://speedreader-livid.vercel.app/",
+                desc: "Data ingestion accelerator. Rapid text processing.",
+                isNew: false
+            },
+            {
+                id: "MOD_006",
+                name: "Checkers Gold",
+                url: "https://checkers-gold.vercel.app/",
+                desc: "Tactical board simulation. Jump logic active.",
+                isNew: false
+            }
+        ];
+
+        // --- APP CONTROLLER ---
+        const bootScreen = document.getElementById('boot-screen');
+        const dashboard = document.getElementById('dashboard');
+        const logsContainer = document.getElementById('terminal-logs');
+        const gridContainer = document.getElementById('game-grid');
+
+        // 1. Boot Sequence Logic
+        const bootLogs = [
+            "> INITIALIZING KERNEL...",
+            "> CONNECTING TO VERCEL NODES...",
+            "> LOADING GRAPHICS DRIVERS... OK",
+            "> MOUNTING GAME MODULES...",
+            "> SYSTEM READY."
+        ];
+
+        async function runBootSequence() {
+            for (let i = 0; i < bootLogs.length; i++) {
+                const p = document.createElement('div');
+                p.className = 'log-line';
+                p.innerText = bootLogs[i];
+                p.style.fontFamily = "monospace";
+                logsContainer.appendChild(p);
+                
+                // Animate opacity (Typewriter style appearance)
+                p.style.opacity = 1;
+                
+                // Random delay between logs for realism
+                await new Promise(r => setTimeout(r, Math.random() * 400 + 300));
+            }
+
+            // Transition to Dashboard
+            setTimeout(() => {
+                bootScreen.style.display = 'none';
+                dashboard.style.display = 'block';
+                // Trigger reflow to ensure CSS transition sees the display change
+                setTimeout(() => dashboard.style.opacity = 1, 50);
+                renderGrid();
+            }, 800);
+        }
+
+        // 2. Render Grid (React-style rendering)
+        function renderGrid() {
+            games.forEach((game, index) => {
+                const card = document.createElement('a');
+                card.href = game.url;
+                card.target = "_blank"; // Open in new tab
+                card.className = 'card fade-in-up';
+                // Staggered animation delay based on index
+                card.style.animationDelay = `${index * 100}ms`;
+
+                const newBadge = game.isNew ? `<div class="new-tag">NEW ARRIVAL</div>` : '';
+
+                card.innerHTML = `
+                    ${newBadge}
+                    <div class="card-header">
+                        <span class="card-title">${game.name}</span>
+                        <span class="card-id">${game.id}</span>
+                    </div>
+                    <div class="card-desc">${game.desc}</div>
+                    <div style="text-align: right; font-size: 0.8rem;">[ CLICK TO LAUNCH ]</div>
+                `;
+
+                gridContainer.appendChild(card);
+            });
+        }
+
+        // Start App
+        window.addEventListener('load', runBootSequence);
+
+    </script>
+</body>
+</html>
