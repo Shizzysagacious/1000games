@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="google-adsense-account" content="ca-pub-1874216482113052">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MAINFRAME // GAME HUB</title>
     <style>
@@ -22,7 +23,7 @@
             color: var(--term-green);
             font-family: var(--font-main);
             overflow-x: hidden;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
@@ -82,6 +83,7 @@
             max-width: 1200px;
             margin: 0 auto;
             width: 100%;
+            flex: 1; /* Pushes footer down */
         }
 
         header {
@@ -114,7 +116,7 @@
             gap: 20px;
         }
 
-        /* --- CARD DESIGN (React-like component style) --- */
+        /* --- CARD DESIGN --- */
         .card {
             border: 1px solid var(--term-dim);
             background: var(--glass);
@@ -183,6 +185,71 @@
             animation: pulse 1s infinite;
         }
 
+        /* --- COMPLIANCE FOOTER (NEW) --- */
+        footer {
+            border-top: 1px solid var(--term-dim);
+            padding: 2rem;
+            text-align: center;
+            font-size: 0.8rem;
+            margin-top: auto;
+            background: rgba(0, 20, 0, 0.5);
+        }
+
+        footer a {
+            color: var(--term-green);
+            text-decoration: none;
+            margin: 0 10px;
+            opacity: 0.7;
+        }
+
+        footer a:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        /* --- COOKIE CONSENT BANNER (NEW) --- */
+        #cookie-banner {
+            position: fixed;
+            bottom: -200px; /* Hidden initially */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 600px;
+            background: #001100;
+            border: 2px solid var(--term-green);
+            padding: 20px;
+            z-index: 2000;
+            box-shadow: 0 0 20px rgba(10, 255, 10, 0.2);
+            transition: bottom 0.5s ease-out;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        #cookie-banner.show {
+            bottom: 20px;
+        }
+
+        .cookie-text {
+            font-size: 0.9rem;
+        }
+
+        .cookie-btn {
+            background: var(--term-green);
+            color: black;
+            border: none;
+            padding: 8px 16px;
+            font-family: var(--font-main);
+            font-weight: bold;
+            cursor: pointer;
+            align-self: flex-end;
+            text-transform: uppercase;
+        }
+
+        .cookie-btn:hover {
+            background: #fff;
+        }
+
         /* --- ANIMATIONS --- */
         @keyframes flicker {
             0% { opacity: 0.02; }
@@ -207,6 +274,7 @@
         }
 
     </style>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1874216482113052" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -215,6 +283,13 @@
 
     <div id="boot-screen">
         <div id="terminal-logs"></div>
+    </div>
+
+    <div id="cookie-banner">
+        <div class="cookie-text">
+            <strong>[SYSTEM ALERT]</strong>: This terminal uses cookies to personalize content and analyze traffic. Google AdSense protocols active.
+        </div>
+        <button class="cookie-btn" onclick="acceptCookies()">ACKNOWLEDGE</button>
     </div>
 
     <main id="dashboard">
@@ -230,13 +305,21 @@
             </div>
     </main>
 
+    <footer>
+        <p>&copy; 2024 MAINFRAME HUB. ALL RIGHTS RESERVED.</p>
+        <br>
+        <a href="privacy.html">PRIVACY PROTOCOL</a>
+        <span>|</span>
+        <a href="mailto:support@1000games.vercel.app">CONTACT ADMIN</a>
+    </footer>
+
     <script>
         // --- DATA LAYER ---
         const games = [
             {
                 id: "MOD_001",
                 name: "Grid Runner 1D",
-                url: "https://grid-runner.vercel.app",
+                url: "https://defender-eight.vercel.app",
                 desc: "High-velocity linear defense protocol. Protect the line.",
                 isNew: true
             },
@@ -282,17 +365,21 @@
         const dashboard = document.getElementById('dashboard');
         const logsContainer = document.getElementById('terminal-logs');
         const gridContainer = document.getElementById('game-grid');
+        const cookieBanner = document.getElementById('cookie-banner');
 
         // 1. Boot Sequence Logic
         const bootLogs = [
             "> INITIALIZING KERNEL...",
             "> CONNECTING TO VERCEL NODES...",
             "> LOADING GRAPHICS DRIVERS... OK",
+            "> CHECKING ADSENSE COMPLIANCE... OK",
             "> MOUNTING GAME MODULES...",
             "> SYSTEM READY."
         ];
 
         async function runBootSequence() {
+            // Check if user has already seen boot this session? (Optional, skipping for cool factor every time)
+            
             for (let i = 0; i < bootLogs.length; i++) {
                 const p = document.createElement('div');
                 p.className = 'log-line';
@@ -300,31 +387,26 @@
                 p.style.fontFamily = "monospace";
                 logsContainer.appendChild(p);
                 
-                // Animate opacity (Typewriter style appearance)
                 p.style.opacity = 1;
-                
-                // Random delay between logs for realism
-                await new Promise(r => setTimeout(r, Math.random() * 400 + 300));
+                await new Promise(r => setTimeout(r, Math.random() * 300 + 200));
             }
 
-            // Transition to Dashboard
             setTimeout(() => {
                 bootScreen.style.display = 'none';
                 dashboard.style.display = 'block';
-                // Trigger reflow to ensure CSS transition sees the display change
                 setTimeout(() => dashboard.style.opacity = 1, 50);
                 renderGrid();
+                checkCookies(); // Check cookie consent after boot
             }, 800);
         }
 
-        // 2. Render Grid (React-style rendering)
+        // 2. Render Grid
         function renderGrid() {
             games.forEach((game, index) => {
                 const card = document.createElement('a');
                 card.href = game.url;
-                card.target = "_blank"; // Open in new tab
+                card.target = "_blank";
                 card.className = 'card fade-in-up';
-                // Staggered animation delay based on index
                 card.style.animationDelay = `${index * 100}ms`;
 
                 const newBadge = game.isNew ? `<div class="new-tag">NEW ARRIVAL</div>` : '';
@@ -341,6 +423,21 @@
 
                 gridContainer.appendChild(card);
             });
+        }
+
+        // 3. Compliance / Cookie Logic
+        function checkCookies() {
+            if (!localStorage.getItem('mainframe_consent')) {
+                setTimeout(() => {
+                    cookieBanner.classList.add('show');
+                }, 2000); // Delay slightly so it doesn't annoy immediately
+            }
+        }
+
+        // Exposed globally for the button onclick
+        window.acceptCookies = function() {
+            localStorage.setItem('mainframe_consent', 'true');
+            cookieBanner.classList.remove('show');
         }
 
         // Start App
