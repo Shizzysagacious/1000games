@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="google-adsense-account" content="ca-pub-1874216482113052">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAINFRAME // GAME HUB</title>
+    <title>1000GAMES // MAINFRAME</title>
     <style>
         /* --- RESET & VARS --- */
         :root {
             --bg-color: #050505;
             --term-green: #0aff0a;
             --term-dim: #003b00;
-            --accent: #ff0055; /* Cyberpunk Pink */
+            --accent: #ff0055;
             --glass: rgba(10, 255, 10, 0.05);
             --font-main: 'Courier New', Courier, monospace;
         }
@@ -32,13 +32,7 @@
         .scanlines {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(
-                to bottom,
-                rgba(255,255,255,0),
-                rgba(255,255,255,0) 50%,
-                rgba(0,0,0,0.2) 50%,
-                rgba(0,0,0,0.2)
-            );
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2));
             background-size: 100% 4px;
             pointer-events: none;
             z-index: 999;
@@ -76,17 +70,16 @@
 
         /* --- DASHBOARD (HIDDEN INITIALLY) --- */
         #dashboard {
-            display: none; /* Toggled by JS */
+            display: none;
             opacity: 0;
             transition: opacity 1s ease;
             padding: 2rem;
             max-width: 1200px;
             margin: 0 auto;
             width: 100%;
-            flex: 1; /* Pushes footer down */
+            flex: 1;
         }
 
-        /* --- HEADER WITH HAMBURGER (MODIFIED) --- */
         header {
             border-bottom: 2px solid var(--term-green);
             padding-bottom: 1rem;
@@ -126,9 +119,7 @@
             cursor: pointer;
             transition: opacity 0.2s;
         }
-        .hamburger:hover {
-            opacity: 0.8;
-        }
+        .hamburger:hover { opacity: 0.8; }
         .hamburger-line {
             width: 100%;
             height: 2px;
@@ -146,7 +137,7 @@
             border-bottom: 2px solid var(--term-green);
             transform: translateY(-100%);
             transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.3, 1);
-            z-index: 2000;  /* above most things, below boot screen? boot screen is 100, so fine */
+            z-index: 2000;
             display: flex;
             justify-content: center;
             gap: 40px;
@@ -154,9 +145,7 @@
             box-shadow: 0 10px 20px rgba(0, 255, 0, 0.1);
         }
 
-        #menu-panel.open {
-            transform: translateY(0);
-        }
+        #menu-panel.open { transform: translateY(0); }
 
         .menu-link {
             color: var(--term-green);
@@ -176,11 +165,57 @@
             text-shadow: 0 0 8px var(--term-green);
         }
 
+        /* --- WELCOME SECTION (HOME) --- */
+        .welcome-section {
+            border: 2px solid var(--term-dim);
+            background: var(--glass);
+            padding: 2rem;
+            margin-bottom: 2.5rem;
+            position: relative;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        .welcome-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 5px var(--term-green);
+            border-bottom: 1px dashed var(--term-green);
+            padding-bottom: 0.5rem;
+        }
+
+        .welcome-section p {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        .welcome-section ul {
+            list-style: none;
+            margin: 1.5rem 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .welcome-section li {
+            border: 1px solid var(--term-dim);
+            padding: 0.5rem 1rem;
+            background: rgba(0, 30, 0, 0.5);
+            font-weight: bold;
+        }
+
+        .welcome-section li::before {
+            content: ">";
+            margin-right: 10px;
+            color: var(--accent);
+        }
+
         /* --- GRID SYSTEM --- */
         .grid-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
+            margin-top: 1rem;
         }
 
         /* --- CARD DESIGN --- */
@@ -212,9 +247,7 @@
             transition: 0.5s;
         }
 
-        .card:hover::before {
-            left: 100%;
-        }
+        .card:hover::before { left: 100%; }
 
         .card-header {
             display: flex;
@@ -224,22 +257,9 @@
             padding-bottom: 0.5rem;
         }
 
-        .card-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-
-        .card-id {
-            font-size: 0.8rem;
-            opacity: 0.7;
-        }
-
-        .card-desc {
-            font-size: 0.9rem;
-            line-height: 1.4;
-            opacity: 0.8;
-            margin-bottom: 1.5rem;
-        }
+        .card-title { font-size: 1.2rem; font-weight: bold; }
+        .card-id { font-size: 0.8rem; opacity: 0.7; }
+        .card-desc { font-size: 0.9rem; line-height: 1.4; opacity: 0.8; margin-bottom: 1.5rem; }
 
         .new-tag {
             position: absolute;
@@ -252,36 +272,37 @@
             animation: pulse 1s infinite;
         }
 
-        /* --- ABOUT PAGE CONTENT (initially hidden) --- */
-        #about-content {
-            display: none;
+        /* --- PAGE CONTENT (ABOUT & BLOG) --- */
+        .page-content {
             border: 2px solid var(--term-dim);
             padding: 2.5rem;
-            text-align: center;
             background: var(--glass);
             margin-top: 1rem;
             animation: slideUp 0.5s ease-out;
+            line-height: 1.7;
         }
 
-        #about-content h2 {
+        .page-content h2 {
             font-size: 2rem;
             margin-bottom: 1.5rem;
             text-shadow: 0 0 8px var(--term-green);
+            border-bottom: 1px solid var(--term-dim);
+            padding-bottom: 0.5rem;
         }
 
-        #about-content p {
-            font-size: 1.1rem;
-            line-height: 1.6;
-            margin-bottom: 1rem;
-            opacity: 0.9;
-        }
-
-        #about-content .glitch {
+        .page-content h3 {
+            font-size: 1.3rem;
+            margin: 1.5rem 0 1rem;
             color: var(--accent);
-            font-weight: bold;
         }
 
-        /* --- COMPLIANCE FOOTER --- */
+        .page-content p { margin-bottom: 1rem; }
+        .page-content ul { margin-left: 2rem; list-style-type: square; }
+        .page-content li { margin-bottom: 0.3rem; }
+
+        .glitch { color: var(--accent); font-weight: bold; }
+
+        /* --- FOOTER --- */
         footer {
             border-top: 1px solid var(--term-dim);
             padding: 2rem;
@@ -298,12 +319,9 @@
             opacity: 0.7;
         }
 
-        footer a:hover {
-            opacity: 1;
-            text-decoration: underline;
-        }
+        footer a:hover { opacity: 1; text-decoration: underline; }
 
-        /* --- COOKIE CONSENT BANNER --- */
+        /* --- COOKIE BANNER --- */
         #cookie-banner {
             position: fixed;
             bottom: -200px;
@@ -322,14 +340,8 @@
             gap: 10px;
         }
 
-        #cookie-banner.show {
-            bottom: 20px;
-        }
-
-        .cookie-text {
-            font-size: 0.9rem;
-        }
-
+        #cookie-banner.show { bottom: 20px; }
+        .cookie-text { font-size: 0.9rem; }
         .cookie-btn {
             background: var(--term-green);
             color: black;
@@ -341,10 +353,7 @@
             align-self: flex-end;
             text-transform: uppercase;
         }
-
-        .cookie-btn:hover {
-            background: #fff;
-        }
+        .cookie-btn:hover { background: #fff; }
 
         /* --- ANIMATIONS --- */
         @keyframes flicker {
@@ -353,53 +362,41 @@
             10% { opacity: 0.02; }
             100% { opacity: 0.02; }
         }
-
         @keyframes pulse {
             0% { opacity: 1; }
             50% { opacity: 0.5; }
             100% { opacity: 1; }
         }
-
         @keyframes slideUp {
             from { transform: translateY(20px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
-        
-        .fade-in-up {
-            animation: slideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-        }
-
+        .fade-in-up { animation: slideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
     </style>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1874216482113052" crossorigin="anonymous"></script>
 </head>
 <body>
-
     <div class="scanlines"></div>
     <div class="flicker-overlay"></div>
 
-    <div id="boot-screen">
-        <div id="terminal-logs"></div>
-    </div>
+    <div id="boot-screen"><div id="terminal-logs"></div></div>
 
     <!-- COOKIE BANNER -->
     <div id="cookie-banner">
-        <div class="cookie-text">
-            <strong>[SYSTEM ALERT]</strong>: This terminal uses cookies to personalize content and analyze traffic. Google AdSense protocols active.
-        </div>
+        <div class="cookie-text"><strong>[SYSTEM ALERT]</strong>: This terminal uses cookies to personalize content and analyze traffic. Google AdSense protocols active.</div>
         <button class="cookie-btn" onclick="acceptCookies()">ACKNOWLEDGE</button>
     </div>
 
     <!-- MAIN DASHBOARD -->
     <main id="dashboard">
-        <!-- HEADER WITH HAMBURGER (TOP RIGHT) -->
         <header>
             <div>
-                <h1>MAINFRAME_V1</h1>
+                <h1>1000GAMES // MAINFRAME</h1>
                 <small>System Architect: [You]</small>
             </div>
             <div class="header-right">
                 <div class="status-badge">SYSTEM ONLINE</div>
-                <!-- Two‑line hamburger icon -->
+                <!-- Two‑line hamburger -->
                 <div class="hamburger" id="hamburger">
                     <span class="hamburger-line"></span>
                     <span class="hamburger-line"></span>
@@ -407,97 +404,101 @@
             </div>
         </header>
 
-        <!-- SLIDE-DOWN MENU (ABOUT & HOME) -->
+        <!-- SLIDE-DOWN MENU (HOME, ABOUT, BLOG) -->
         <div id="menu-panel">
-            <a href="#" class="menu-link" id="home-link">HOME PAGE</a>
-            <a href="#" class="menu-link" id="about-link">ABOUT PAGE</a>
+            <a href="#" class="menu-link" id="home-link">HOME</a>
+            <a href="#" class="menu-link" id="about-link">ABOUT</a>
+            <a href="#" class="menu-link" id="blog-link">BLOG</a>
         </div>
 
-        <!-- GAME GRID (HOME PAGE CONTENT) -->
-        <div class="grid-container" id="game-grid"></div>
+        <!-- HOME PAGE BLOCK (welcome + game grid) -->
+        <div id="home-block">
+            <div class="welcome-section">
+                <h2>Welcome to 1000Games – Free Online Browser Games for Everyone</h2>
+                <p>At 1000Games, we believe gaming should be simple, fast, and accessible to everyone. Our platform provides a growing collection of free online games that you can play instantly in your browser — no downloads, no installations, and no hidden fees.</p>
+                <p>Whether you enjoy action-packed challenges, strategic puzzles, casual time-pass games, or multiplayer competitions, 1000Games offers something for every type of gamer.</p>
+                <h3>Why Choose 1000Games?</h3>
+                <ul>
+                    <li>🎮 100% Free to Play</li>
+                    <li>⚡ Instant Browser Access</li>
+                    <li>📱 Mobile & Desktop Compatible</li>
+                    <li>🔄 Regularly Updated Game Library</li>
+                    <li>👨‍👩‍👧 Family-Friendly Options</li>
+                </ul>
+                <p>Our mission is to create a reliable and enjoyable gaming hub where users can discover new games, improve their skills, and enjoy entertainment safely online.</p>
+                <p>We carefully select and organize games to ensure smooth performance, engaging gameplay, and a secure browsing experience.</p>
+                <p>If you’re looking for quick fun during a break, competitive challenges, or relaxing puzzle sessions, 1000Games is your go-to destination.</p>
+                <p style="margin-top: 1.5rem;"><strong>Start exploring and discover your next favorite game today!</strong></p>
+            </div>
+            <div class="grid-container" id="game-grid"></div>
+        </div>
 
         <!-- ABOUT PAGE CONTENT (hidden by default) -->
-        <div id="about-content">
-            <h2>╔══════════════╗<br>  ABOUT MAINFRAME  <br>╚══════════════╝</h2>
-            <p>> SYSTEM: MAINFRAME V1 // GAME HUB</p>
-            <p>> VERSION: 1.3.7 / REVISION: CYBER</p>
-            <p>> ARCHITECT: [YOU] / USER: <span class="glitch">ANONYMOUS</span></p>
-            <p>> A curated collection of retro‑styled games and tools.<br>   All modules deployed via VERCEL edge.</p>
-            <p>> Use the menu to return to the <strong>HOME PAGE</strong>.</p>
-            <p style="margin-top: 2rem; opacity:0.5;">[ TERMINAL READY ]</p>
+        <div id="about-content" class="page-content" style="display: none;">
+            <h2>About 1000Games</h2>
+            <p>1000Games is an independent online gaming platform designed to provide high-quality browser games to players worldwide. Our goal is to make online gaming accessible, simple, and enjoyable for everyone, regardless of device or location.</p>
+            <h3>We focus on:</h3>
+            <ul>
+                <li>Curating engaging and diverse games</li>
+                <li>Ensuring smooth gameplay performance</li>
+                <li>Providing a safe and user-friendly experience</li>
+                <li>Continuously expanding our game collection</li>
+            </ul>
+            <p>Our platform is built for gamers who want instant access to entertainment without complicated installations or subscriptions.</p>
+            <p>We believe that gaming should be inclusive and available to anyone with an internet connection. That’s why 1000Games is designed to work seamlessly across modern browsers on desktop and mobile devices.</p>
+            <p>As we grow, we aim to add more categories, improve recommendations, and introduce features that enhance player engagement.</p>
+            <p><strong>Thank you for being part of our gaming community.</strong></p>
+        </div>
+
+        <!-- BLOG ARTICLE CONTENT (hidden by default) -->
+        <div id="blog-content" class="page-content" style="display: none;">
+            <h2>The Evolution of Online Browser Games</h2>
+            <p>Online browser games have transformed significantly over the past two decades. From simple Flash-based arcade experiences to advanced HTML5 multiplayer environments, browser gaming has become a major segment of the entertainment industry.</p>
+            <p>In the early 2000s, browser games were basic and often limited by technology. However, advancements in web development technologies such as HTML5, WebGL, and JavaScript frameworks have enabled developers to create immersive and responsive gaming experiences directly in browsers.</p>
+            <p>Today, players can enjoy action games, simulation games, puzzle challenges, and even multiplayer competitions without downloading large files or installing applications.</p>
+            <p>The accessibility of browser games has played a key role in their popularity. Users can start playing instantly on laptops, tablets, and smartphones. This ease of access removes barriers that traditional gaming platforms often impose.</p>
+            <p>Additionally, modern browser games are optimized for performance and cross-device compatibility. Developers now focus on smooth gameplay, responsive controls, and engaging mechanics.</p>
+            <p>As internet speeds improve and cloud technologies advance, browser gaming is expected to continue evolving. With increasing integration of AI, real-time multiplayer systems, and social features, the future of online gaming remains highly promising.</p>
+            <p><span class="glitch">Platforms like 1000Games aim to bring this evolving gaming experience to players worldwide in a simple and accessible format.</span></p>
         </div>
     </main>
 
     <footer>
-        <p>&copy; 2026 MAINFRAME HUB. ALL RIGHTS RESERVED.</p>
+        <p>&copy; 2026 1000GAMES HUB. ALL RIGHTS RESERVED.</p>
         <br>
-        <a href="privacy.html">PRIVACY PROTOCOL</a>
-        <span>|</span>
+        <a href="privacy.html">PRIVACY PROTOCOL</a> <span>|</span>
         <a href="mailto:alabimuiz0@gmail.com">CONTACT ADMIN</a>
     </footer>
 
     <script>
-        // --- DATA LAYER ---
+        // --- GAME DATA ---
         const games = [
-            {
-                id: "MOD_001",
-                name: "Grid Runner 1D",
-                url: "https://defender-eight.vercel.app",
-                desc: "High-velocity linear defense protocol. Protect the line.",
-                isNew: true
-            },
-            {
-                id: "MOD_002",
-                name: "Chess Seven",
-                url: "https://chess-seven-nu.vercel.app/",
-                desc: "Strategic warfare simulator. Standard rules apply.",
-                isNew: false
-            },
-            {
-                id: "MOD_003",
-                name: "TypeFaster",
-                url: "https://typefaster-three.vercel.app",
-                desc: "Input velocity training. Measure your WPM efficiency.",
-                isNew: false
-            },
-            {
-                id: "MOD_004",
-                name: "Tic-Tac-Toe",
-                url: "https://tic-tac-toe-1-ruby.vercel.app",
-                desc: "Logic core calibration. Ruby-based opponent.",
-                isNew: false
-            },
-            {
-                id: "MOD_005",
-                name: "Speed Reader",
-                url: "https://speedreader-livid.vercel.app/",
-                desc: "Data ingestion accelerator. Rapid text processing.",
-                isNew: false
-            },
-            {
-                id: "MOD_006",
-                name: "Checkers Gold",
-                url: "https://checkers-gold.vercel.app/",
-                desc: "Tactical board simulation. Jump logic active.",
-                isNew: false
-            }
+            { id: "MOD_001", name: "Grid Runner 1D", url: "https://defender-eight.vercel.app", desc: "High-velocity linear defense protocol. Protect the line.", isNew: true },
+            { id: "MOD_002", name: "Chess Seven", url: "https://chess-seven-nu.vercel.app/", desc: "Strategic warfare simulator. Standard rules apply.", isNew: false },
+            { id: "MOD_003", name: "TypeFaster", url: "https://typefaster-three.vercel.app", desc: "Input velocity training. Measure your WPM efficiency.", isNew: false },
+            { id: "MOD_004", name: "Tic-Tac-Toe", url: "https://tic-tac-toe-1-ruby.vercel.app", desc: "Logic core calibration. Ruby-based opponent.", isNew: false },
+            { id: "MOD_005", name: "Speed Reader", url: "https://speedreader-livid.vercel.app/", desc: "Data ingestion accelerator. Rapid text processing.", isNew: false },
+            { id: "MOD_006", name: "Checkers Gold", url: "https://checkers-gold.vercel.app/", desc: "Tactical board simulation. Jump logic active.", isNew: false }
         ];
 
-        // --- APP CONTROLLER ---
+        // --- ELEMENTS ---
         const bootScreen = document.getElementById('boot-screen');
         const dashboard = document.getElementById('dashboard');
         const logsContainer = document.getElementById('terminal-logs');
         const gridContainer = document.getElementById('game-grid');
         const cookieBanner = document.getElementById('cookie-banner');
 
-        // --- NEW ELEMENTS FOR HAMBURGER MENU & PAGES ---
+        // Menu elements
         const hamburger = document.getElementById('hamburger');
         const menuPanel = document.getElementById('menu-panel');
         const homeLink = document.getElementById('home-link');
         const aboutLink = document.getElementById('about-link');
+        const blogLink = document.getElementById('blog-link');
+        const homeBlock = document.getElementById('home-block');
         const aboutContent = document.getElementById('about-content');
+        const blogContent = document.getElementById('blog-content');
 
-        // 1. Boot Sequence Logic
+        // --- BOOT SEQUENCE ---
         const bootLogs = [
             "> INITIALIZING KERNEL...",
             "> CONNECTING TO VERCEL NODES...",
@@ -514,21 +515,20 @@
                 p.innerText = bootLogs[i];
                 p.style.fontFamily = "monospace";
                 logsContainer.appendChild(p);
-                
                 p.style.opacity = 1;
                 await new Promise(r => setTimeout(r, Math.random() * 300 + 200));
             }
-
             setTimeout(() => {
                 bootScreen.style.display = 'none';
                 dashboard.style.display = 'block';
                 setTimeout(() => dashboard.style.opacity = 1, 50);
                 renderGrid();
-                checkCookies(); // Check cookie consent after boot
+                checkCookies();
+                // Ensure home is visible initially
+                showHome();
             }, 800);
         }
 
-        // 2. Render Grid (Home Page)
         function renderGrid() {
             games.forEach((game, index) => {
                 const card = document.createElement('a');
@@ -536,73 +536,75 @@
                 card.target = "_blank";
                 card.className = 'card fade-in-up';
                 card.style.animationDelay = `${index * 100}ms`;
-
                 const newBadge = game.isNew ? `<div class="new-tag">NEW ARRIVAL</div>` : '';
-
                 card.innerHTML = `
                     ${newBadge}
-                    <div class="card-header">
-                        <span class="card-title">${game.name}</span>
-                        <span class="card-id">${game.id}</span>
-                    </div>
+                    <div class="card-header"><span class="card-title">${game.name}</span><span class="card-id">${game.id}</span></div>
                     <div class="card-desc">${game.desc}</div>
                     <div style="text-align: right; font-size: 0.8rem;">[ CLICK TO LAUNCH ]</div>
                 `;
-
                 gridContainer.appendChild(card);
             });
         }
 
-        // 3. Compliance / Cookie Logic
+        // --- COOKIE CONSENT ---
         function checkCookies() {
             if (!localStorage.getItem('mainframe_consent')) {
-                setTimeout(() => {
-                    cookieBanner.classList.add('show');
-                }, 2000);
+                setTimeout(() => cookieBanner.classList.add('show'), 2000);
             }
         }
-
         window.acceptCookies = function() {
             localStorage.setItem('mainframe_consent', 'true');
             cookieBanner.classList.remove('show');
+        };
+
+        // --- PAGE SWITCHING ---
+        function showHome() {
+            homeBlock.style.display = 'block';
+            aboutContent.style.display = 'none';
+            blogContent.style.display = 'none';
+        }
+        function showAbout() {
+            homeBlock.style.display = 'none';
+            aboutContent.style.display = 'block';
+            blogContent.style.display = 'none';
+        }
+        function showBlog() {
+            homeBlock.style.display = 'none';
+            aboutContent.style.display = 'none';
+            blogContent.style.display = 'block';
         }
 
-        // --- HAMBURGER MENU FUNCTIONALITY ---
-        // Toggle menu on hamburger click
+        // --- HAMBURGER MENU TOGGLE ---
         hamburger.addEventListener('click', (e) => {
             e.stopPropagation();
             menuPanel.classList.toggle('open');
         });
 
-        // Close menu when clicking outside
         document.addEventListener('click', (e) => {
             if (!menuPanel.contains(e.target) && !hamburger.contains(e.target)) {
                 menuPanel.classList.remove('open');
             }
         });
 
-        // --- PAGE SWITCHING: HOME vs ABOUT ---
-        // Home link: show grid, hide about, close menu
+        // Menu link clicks
         homeLink.addEventListener('click', (e) => {
             e.preventDefault();
-            gridContainer.style.display = 'grid';   // ensure grid is visible (its default)
-            aboutContent.style.display = 'none';
+            showHome();
             menuPanel.classList.remove('open');
         });
-
-        // About link: hide grid, show about, close menu
         aboutLink.addEventListener('click', (e) => {
             e.preventDefault();
-            gridContainer.style.display = 'none';
-            aboutContent.style.display = 'block';
+            showAbout();
+            menuPanel.classList.remove('open');
+        });
+        blogLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showBlog();
             menuPanel.classList.remove('open');
         });
 
-        // Initially ensure about is hidden and grid visible (grid already visible from CSS)
-        aboutContent.style.display = 'none';
-        // But if grid container is empty, it's fine. renderGrid will fill it.
-
-        // Start App
+        // Start
         window.addEventListener('load', runBootSequence);
     </script>
 </body>
